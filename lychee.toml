@@ -23,4 +23,5 @@ accept = "200,204,429"
 
 # Surface only real failures; mark remaining output as informational.
 no_progress = true
-verbose = true
+# verbose expects a log level string (error|warn|info|debug|trace), not a bool.
+verbose = "info"
