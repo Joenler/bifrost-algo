@@ -1,0 +1,22 @@
+# lychee link-checker configuration for the bifrost-algo CI link-check step.
+#
+# Rationale:
+#   The README uses relative '../bifrost-program/ADRs/...' links that resolve
+#   when this repo is cloned as a sibling of the organizer-internal
+#   'bifrost-program' planning hub. On the CI runner only 'bifrost-algo' is
+#   checked out, so those sibling paths would 404 unless excluded here.
+
+exclude_path = [
+  "../bifrost-program",
+  "node_modules",
+]
+
+# Keep the same accepted status codes as the workflow args previously allowed.
+accept = [200, 204, 429]
+
+# Respect repository-root relative link resolution.
+base = "."
+
+# Surface only real failures; mark remaining output as informational.
+no_progress = true
+verbose = true

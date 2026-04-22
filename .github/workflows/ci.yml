@@ -23,5 +23,8 @@ jobs:
       - name: Link check
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --verbose --accept 200,204,429 './**/*.md'
+          # Use the repo-root lychee.toml so sibling-repo links
+          # (../bifrost-program/ADRs/*) are excluded on CI — that
+          # directory is not checked out on the runner.
+          args: --config lychee.toml './**/*.md'
           fail: true
