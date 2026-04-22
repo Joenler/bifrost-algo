@@ -6,16 +6,25 @@
 #   'bifrost-program' planning hub. On the CI runner only 'bifrost-algo' is
 #   checked out, so those sibling paths would 404 unless excluded here.
 
+# exclude_path filters source files that lychee should not scan at
+# all; 'exclude' filters resolved link URLs/paths.
 exclude_path = [
-  "../bifrost-program",
   "node_modules",
 ]
 
-# Also exclude the bare path pattern in case lychee resolves links
-# relative to the markdown file rather than the repo root — this
-# catches '../bifrost-program/ADRs/*' before any HTTP attempt.
+# Exclude resolved links.
+#  1. Sibling-repo 'bifrost-program' — local-only organizer hub not
+#     checked out on CI runners. On GitHub Actions relative links
+#     resolve to 'file:///home/runner/work/bifrost-algo/bifrost-program/...';
+#     on a developer's laptop they resolve differently. The pattern
+#     '/bifrost-program/' catches both.
+#  2. Our own private companion repo 'Joenler/bifrost-exchange'.
+#     Private repos return 404 to unauthenticated HTTP HEAD requests;
+#     we know the link is valid but lychee cannot prove it without
+#     a GH token that would need repo scope on a sibling.
 exclude = [
-  "^\\.\\./bifrost-program/",
+  "/bifrost-program/",
+  "^https://github\\.com/Joenler/bifrost-exchange",
 ]
 
 # Keep the same accepted status codes as the workflow args previously allowed.
