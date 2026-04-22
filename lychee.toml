@@ -11,11 +11,15 @@ exclude_path = [
   "node_modules",
 ]
 
-# Keep the same accepted status codes as the workflow args previously allowed.
-accept = [200, 204, 429]
+# Also exclude the bare path pattern in case lychee resolves links
+# relative to the markdown file rather than the repo root — this
+# catches '../bifrost-program/ADRs/*' before any HTTP attempt.
+exclude = [
+  "^\\.\\./bifrost-program/",
+]
 
-# Respect repository-root relative link resolution.
-base = "."
+# Keep the same accepted status codes as the workflow args previously allowed.
+accept = "200,204,429"
 
 # Surface only real failures; mark remaining output as informational.
 no_progress = true
