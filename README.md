@@ -33,19 +33,22 @@ The central machine runs `bifrost-exchange` via `docker compose up`. It exposes 
 strategy gateway on the LAN. Your strategy's Docker container connects outbound to that
 gateway. LAN-only; no TLS; no auth beyond the team name you register with.
 
-See the central-machine repo: [`bifrost-exchange`](https://github.com/jonathanjonler/bifrost-exchange).
+See the central-machine repo: [`bifrost-exchange`](https://github.com/Joenler/bifrost-exchange).
 
 ## Architecture decisions
 
 The BIFROST program keeps its architecture decision records in the organizer-internal
-[`bifrost-program`](https://github.com/jonathanjonler/bifrost-program) repo. The following
-ADRs govern the wire contract, guards, and session-ops design that teams need to understand:
+`bifrost-program/` planning hub (kept local and not published to GitHub). The links
+below resolve when this repo and `bifrost-program/` are cloned as siblings under the
+same parent directory — the documented organizer workstation setup. Participants
+cloning only `bifrost-algo` will not resolve these links; ADR content is
+organizer-authored and not required reading to compete.
 
-- [`ADR-0002` — gRPC Strategy Gateway](https://github.com/jonathanjonler/bifrost-program/blob/main/ADRs/ADR-0002-grpc-strategy-gateway.md) — the wire your SDK speaks.
-- [`ADR-0003` — Aggregate-position imbalance pricing](https://github.com/jonathanjonler/bifrost-program/blob/main/ADRs/ADR-0003-imbalance-pricing-model.md) — how your position settles at gate.
-- [`ADR-0004` — Fair-play guards](https://github.com/jonathanjonler/bifrost-program/blob/main/ADRs/ADR-0004-fair-play-guards.md) — what the gateway rejects.
-- [`ADR-0005` — Command-driven MC console](https://github.com/jonathanjonler/bifrost-program/blob/main/ADRs/ADR-0005-mc-console-command-driven.md) — how rounds progress.
-- [`ADR-0006` — Two-code-repo layout](https://github.com/jonathanjonler/bifrost-program/blob/main/ADRs/ADR-0006-two-code-repo-layout.md) — supersedes ADR-0001; explains why this repo exists alongside `bifrost-exchange`.
+- [`ADR-0002` — gRPC Strategy Gateway](../bifrost-program/ADRs/ADR-0002-grpc-strategy-gateway.md) — the wire your SDK speaks.
+- [`ADR-0003` — Aggregate-position imbalance pricing](../bifrost-program/ADRs/ADR-0003-imbalance-pricing-model.md) — how your position settles at gate.
+- [`ADR-0004` — Fair-play guards](../bifrost-program/ADRs/ADR-0004-fair-play-guards.md) — what the gateway rejects.
+- [`ADR-0005` — Command-driven MC console](../bifrost-program/ADRs/ADR-0005-mc-console-command-driven.md) — how rounds progress.
+- [`ADR-0006` — Two-code-repo layout](../bifrost-program/ADRs/ADR-0006-two-code-repo-layout.md) — supersedes ADR-0001; explains why this repo exists alongside `bifrost-exchange`.
 
 ## License
 
