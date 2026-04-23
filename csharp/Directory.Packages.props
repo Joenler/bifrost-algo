@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Bifrost.Contracts.Market" Version="1.0.0" />
+    <PackageVersion Include="Bifrost.Contracts.Auction" Version="1.0.0" />
+    <PackageVersion Include="Bifrost.Contracts.Round" Version="1.0.0" />
+    <PackageVersion Include="Bifrost.Contracts.Events" Version="1.0.0" />
+    <PackageVersion Include="Bifrost.Contracts.Strategy" Version="1.0.0" />
+    <PackageVersion Include="Bifrost.Contracts.Mc" Version="1.0.0" />
+  </ItemGroup>
+</Project>

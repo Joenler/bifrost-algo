@@ -28,3 +28,90 @@ jobs:
           # directory is not checked out on the runner.
           args: --config lychee.toml './**/*.md'
           fail: true
+
+  contracts-smoke-csharp:
+    # Cross-repo asset consumption smoke test — RESEARCH Assumption A4:
+    # if default GITHUB_TOKEN cannot `gh release download` across private→private,
+    # this job is expected to fail on first run. Phase 08/09 provisions a PAT secret
+    # (CONTRACTS_READ_TOKEN) at which point this job flips to required. For Phase 01
+    # exit, this job is ADVISORY — `continue-on-error: true` prevents it from blocking
+    # the bifrost-algo CI run while the token model is being resolved.
+    name: contracts-smoke-csharp
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download contracts NuGet packages from exchange release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(cat CONTRACTS_VERSION)
+          echo "Downloading Bifrost.Contracts.*.nupkg from v${VERSION} to ${{ github.workspace }}/packages"
+          gh release download "v${VERSION}" \
+            -R Joenler/bifrost-exchange \
+            -p '*.nupkg' \
+            -D "${{ github.workspace }}/packages"
+          ls -la "${{ github.workspace }}/packages"
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Rewrite nuget.config bifrost-contracts source to absolute path
+        # The committed csharp/nuget.config ships `value="./packages"` as a repo-root-
+        # relative placeholder. NuGet resolves `./packages` relative to the csproj
+        # directory, which is nested two levels deep (csharp/Bifrost.Algo.Placeholder/).
+        # Rather than copying nupkgs into that subdir, rewrite the source value
+        # in-place to the absolute workspace path. One sed, zero file relocation.
+        run: |
+          sed -i 's|value="./packages"|value="${{ github.workspace }}/packages"|' csharp/nuget.config
+          echo "--- nuget.config after rewrite ---"
+          cat csharp/nuget.config
+
+      - name: Smoke-restore C# placeholder csproj
+        working-directory: csharp
+        run: |
+          dotnet restore Bifrost.Algo.Placeholder/Bifrost.Algo.Placeholder.csproj
+          dotnet build Bifrost.Algo.Placeholder/Bifrost.Algo.Placeholder.csproj -c Release --nologo
+
+  contracts-smoke-python:
+    # Cross-repo asset consumption smoke test — see contracts-smoke-csharp comment
+    # above for continue-on-error rationale (RESEARCH Assumption A4).
+    name: contracts-smoke-python
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download contracts wheel from exchange release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(cat CONTRACTS_VERSION)
+          echo "Downloading bifrost_contracts-${VERSION}*.whl from v${VERSION}"
+          gh release download "v${VERSION}" \
+            -R Joenler/bifrost-exchange \
+            -p '*.whl' \
+            -D ./packages
+          ls -la ./packages
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: astral-sh/setup-uv@v4
+
+      - name: Smoke-install Python wheel
+        working-directory: python
+        run: |
+          VERSION=$(cat ../CONTRACTS_VERSION)
+          uv venv
+          uv pip install --find-links ../packages "bifrost_contracts==${VERSION}"
+          # Smoke-import every surface module so any mis-generated submodule fails fast.
+          uv run python -c "from bifrost_contracts.strategy import strategy_pb2; print(strategy_pb2.StrategyCommand.__name__)"
+          uv run python -c "from bifrost_contracts.market import market_pb2; print(market_pb2.BookView.__name__)"
+          uv run python -c "from bifrost_contracts.auction import auction_pb2; print(auction_pb2.BidMatrix.__name__)"
+          uv run python -c "from bifrost_contracts.round import round_pb2; print(round_pb2.RoundState.__name__)"
+          uv run python -c "from bifrost_contracts.events import events_pb2; print(events_pb2.Event.__name__)"
+          uv run python -c "from bifrost_contracts.mc import mc_pb2; print(mc_pb2.McCommand.__name__)"
