@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Bifrost.Algo.Placeholder</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Smoke-resolve target: confirms the bifrost-contracts NuGet source (absolute
+         path injected by CI's sed step) is discoverable and Bifrost.Contracts.Strategy
+         installs on dotnet restore. -->
+    <PackageReference Include="Bifrost.Contracts.Strategy" />
+  </ItemGroup>
+</Project>
