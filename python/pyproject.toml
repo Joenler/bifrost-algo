@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "BIFROST Python strategy framework — placeholder manifest; real SDK ships in Phase 09."
 requires-python = ">=3.12"
 dependencies = [
-  "bifrost_contracts==1.0.0",
+  "bifrost_contracts==1.1.0",
   "grpcio>=1.78.0",
   "protobuf>=5.29.0",
 ]
